@@ -160,7 +160,10 @@ export const Protect = CatchAsync(async (vReq, vRes, vNext) => {
   }
   vReq.vUser = currentUser;
   vRes.locals.vUser = currentUser;
-  vNext();
+  vRes.status(200).json({
+    vStatus: "Success",
+    currentUser,
+  });
 });
 //*
 //*

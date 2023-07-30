@@ -13,7 +13,7 @@ mongoose
     console.log("❕Database Connection Successful!!!");
   });
 // console.log(process.env.FRONTEND_URL);
-const vPortNumber = process.env.PORT || 4000;
+const vPortNumber = 4000;
 const Server = App.listen(vPortNumber, () => {
   console.log(
     `❕App Running On PortNumber: ${vPortNumber} in ${process.env.NODE_ENV}`
