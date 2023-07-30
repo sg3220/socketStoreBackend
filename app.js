@@ -9,8 +9,9 @@ import cors from "cors";
 export const App = express();
 App.use(cookieParser());
 App.use(
+  "*",
   cors({
-    origin: [process.env.FRONTEND_URL],
+    origin: true,
     methods: ["GET", "POST", "PATCH", "DELETE"],
     credentials: true,
   })
