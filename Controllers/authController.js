@@ -169,7 +169,6 @@ export const Protect = CatchAsync(async (vReq, vRes, vNext) => {
 //*
 //*
 //*
-//*
 //* IS-RESTRICT-TO
 export const restrictTo = (...vRoles) => {
   return (vReq, vRes, vNext) => {
