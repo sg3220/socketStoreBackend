@@ -120,7 +120,7 @@ export const LogOut = (vReq, vRes) => {
       sameSite: process.env.NODE_ENV === "Development" ? "lax" : "none",
       secure: process.env.NODE_ENV === "Development" ? false : true,
     })
-    .json({ vStatus: "Success", currentUser });
+    .json({ vStatus: "Success" });
 };
 //*
 //*
