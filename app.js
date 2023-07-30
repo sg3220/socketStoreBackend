@@ -29,7 +29,7 @@ const productList = [
     id: "64c23b33ac02c2340caebfde",
   },
 ];
-App.use("/Bittu", (req, res) => [res.send(productList)]);
+App.use("/", (req, res) => res.send("Server Running"));
 //^ 👇It Is Required To Access The Body
 App.use(express.json());
 App.use("/API/V1/Users", userRouter);
