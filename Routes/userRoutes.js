@@ -4,7 +4,7 @@ const uRouter = express.Router();
 uRouter.post("/SignUp", authController.SignUp);
 uRouter.get("/KnowMe", authController.Protect, authController.KnowMe);
 uRouter.post("/LogIn", authController.LogIn);
-uRouter.get("/LogOut", authController.LogOut);
+uRouter.get("/LogOut", authController.Protect, authController.LogOut);
 uRouter.post("/ForgotPassword", authController.ForgotPassword);
 uRouter.patch("/ResetPassword/:vToken", authController.ResetPassword);
 uRouter.use(authController.Protect);

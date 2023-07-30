@@ -21,18 +21,19 @@ import os from "os";
 //*
 //* vCreateSendToken
 const vCreateSendToken = (vUser, statusCode, vMessage, vRes) => {
-  const vToken = jwt.sign({ _id: vUser._id }, process.env.JWT_SECRET);
-  const cookieOptions = {
-    httpOnly: true,
-    maxAge: 15 * 60 * 1000,
-    sameSite: process.env.NODE_ENV === "Development" ? "lax" : "none",
-    secure: process.env.NODE_ENV === "Development" ? false : true,
-  };
-  const token = vToken;
-  vRes.status(statusCode).cookie("token", token, cookieOptions).json({
-    vStatus: "Success",
-    vMessage,
-  });
+  const token = jwt.sign({ _id: vUser._id }, process.env.JWT_SECRET);
+  vRes
+    .status(statusCode)
+    .cookie("token", token, {
+      httpOnly: true,
+      maxAge: 15 * 60 * 1000,
+      sameSite: process.env.NODE_ENV === "Development" ? "lax" : "none",
+      secure: process.env.NODE_ENV === "Development" ? false : true,
+    })
+    .json({
+      vStatus: "Success",
+      vMessage,
+    });
 };
 //*
 //*
@@ -112,17 +113,14 @@ export const LogIn = CatchAsync(async (vReq, vRes, vNext) => {
 //*
 //* LOGOUT
 export const LogOut = (vReq, vRes) => {
-  const cookieOptions = {
-    httpOnly: true,
-    expires: new Date(Date.now()),
-    sameSite: process.env.NODE_ENV === "Development" ? "lax" : "none",
-    secure: process.env.NODE_ENV === "Development" ? false : true,
-  };
-
   vRes
     .status(200)
-    .cookie("token", "", cookieOptions)
-    .json({ vStatus: "Success", currentUser: vReq.vUser });
+    .cookie("token", "", {
+      expires: new Date(Date.now()),
+      sameSite: process.env.NODE_ENV === "Development" ? "lax" : "none",
+      secure: process.env.NODE_ENV === "Development" ? false : true,
+    })
+    .json({ vStatus: "Success", currentUser });
 };
 //*
 //*
