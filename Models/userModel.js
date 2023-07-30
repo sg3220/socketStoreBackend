@@ -21,6 +21,7 @@ const vUserSchema = new mongoose.Schema({
   vPassword: {
     type: String,
     required: [true, "❗vPassword: Is Required Field"],
+    select: false,
   },
   vPasswordConfirm: {
     type: String,
@@ -40,6 +41,7 @@ const vUserSchema = new mongoose.Schema({
     type: String,
     enum: ["vClient", "vAdministrator"],
     default: "vClient",
+    select: false,
   },
   vActiveStatus: {
     type: Boolean,

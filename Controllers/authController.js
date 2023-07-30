@@ -14,29 +14,24 @@ import os from "os";
 //*
 //*
 //*
-//* VSignToken
-const vSignToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, {
-    expiresIn: 10 * 1000,
-  });
-};
+
 //*
 //*
 //*
 //*
 //* vCreateSendToken
-const vCreateSendToken = (vUser, statusCode, vRes) => {
-  const vToken = vSignToken(vUser._id);
+const vCreateSendToken = (vUser, statusCode, vMessage, vRes) => {
+  const vToken = jwt.sign({ _id: vUser._id }, process.env.JWT_SECRET);
   const cookieOptions = {
     httpOnly: true,
-    maxAge: 10 * 1000,
+    maxAge: 15 * 60 * 1000,
     sameSite: process.env.NODE_ENV === "Development" ? "lax" : "none",
     secure: process.env.NODE_ENV === "Development" ? false : true,
   };
-  vRes.cookie("jwt", vToken, cookieOptions);
-  vRes.status(statusCode).json({
+  const token = vToken;
+  vRes.status(statusCode).cookie("token", token, cookieOptions).json({
     vStatus: "Success",
-    vToken,
+    vMessage,
   });
 };
 //*
@@ -51,7 +46,7 @@ export const SignUp = CatchAsync(async (vReq, vRes, vNext) => {
     vPassword: vReq.body.vPassword,
     vPasswordConfirm: vReq.body.vPasswordConfirm,
   });
-  vCreateSendToken(vNewUser, 201, vRes);
+  vCreateSendToken(vNewUser, 201, "SignUp Successful", vRes);
   try {
     await vSendEmail({
       vClientEmail: vReq.body.vEmail,
@@ -93,7 +88,7 @@ export const LogIn = CatchAsync(async (vReq, vRes, vNext) => {
   ) {
     return vNext(new AppError("❗Incorrect Email OR Password", 401));
   }
-  vCreateSendToken(temporaryUser, 200, vRes);
+  vCreateSendToken(temporaryUser, 200, "LogIn Successful", vRes);
   try {
     await vSendEmail({
       vClientEmail: vReq.body.vEmail,
@@ -119,12 +114,15 @@ export const LogIn = CatchAsync(async (vReq, vRes, vNext) => {
 export const LogOut = (vReq, vRes) => {
   const cookieOptions = {
     httpOnly: true,
-    maxAge: 10 * 1000,
+    expires: new Date(Date.now()),
     sameSite: process.env.NODE_ENV === "Development" ? "lax" : "none",
     secure: process.env.NODE_ENV === "Development" ? false : true,
   };
-  vRes.cookie("jwt", "LogOut", cookieOptions);
-  vRes.status(200).json({ vStatus: "Success" });
+
+  vRes
+    .status(200)
+    .cookie("token", "", cookieOptions)
+    .json({ vStatus: "Success", currentUser: vReq.vUser });
 };
 //*
 //*
@@ -132,24 +130,13 @@ export const LogOut = (vReq, vRes) => {
 //*
 //* PROTECT
 export const Protect = CatchAsync(async (vReq, vRes, vNext) => {
-  let temporaryToken;
-  if (
-    vReq.headers.authorization &&
-    vReq.headers.authorization.startsWith("Bearer")
-  ) {
-    temporaryToken = vReq.headers.authorization.split(" ")[1];
-  } else if (vReq.cookies.jwt) {
-    temporaryToken = vReq.cookies.jwt;
-  }
+  const { token } = vReq.cookies;
+  const temporaryToken = token;
   if (!temporaryToken) {
     return vNext(new AppError("❗Please LogIn To Get Access", 401));
   }
-  const vDecoded = await promisify(jwt.verify)(
-    temporaryToken,
-    process.env.JWT_SECRET
-  );
-  console.log(vDecoded.id);
-  const currentUser = await vUser.findById(vDecoded.id);
+  const vDecoded = jwt.verify(temporaryToken, process.env.JWT_SECRET);
+  const currentUser = await vUser.findById(vDecoded._id);
   if (!currentUser) {
     return vNext(new AppError("❗Token-User Mismatch", 401));
   }
@@ -164,7 +151,14 @@ export const Protect = CatchAsync(async (vReq, vRes, vNext) => {
     vStatus: "Success",
     currentUser,
   });
+  vNext();
 });
+export const KnowMe = (vReq, vRes) => {
+  vRes.status(200).json({
+    vMessage: "Success",
+    user: currentUser,
+  });
+};
 //*
 //*
 //*
