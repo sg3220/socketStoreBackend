@@ -41,7 +41,6 @@ const vUserSchema = new mongoose.Schema({
     type: String,
     enum: ["vClient", "vAdministrator"],
     default: "vClient",
-    select: false,
   },
   vActiveStatus: {
     type: Boolean,

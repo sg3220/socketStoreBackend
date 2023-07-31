@@ -17,10 +17,10 @@ const vProductSchema = new mongoose.Schema({
     unique: true,
   },
   vSlug: String,
-  vProductImages: {
-    type: [String],
-    // required: [true, "❗ vProductImages: Is Required Field"],
-  },
+  vFrontImage: String,
+  // required: [true, "❗ vFrontImage: Is Required Field"],
+
+  vBackImage: String,
   vPrice: {
     type: Number,
     required: [true, "❗vPrice: Is Required Field"],

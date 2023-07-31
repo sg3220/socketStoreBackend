@@ -17,7 +17,7 @@ pRouter
     productController.deleteProduct
   );
 pRouter
-  .route("/postProduct")
+  .route("/PostProduct")
   .post(
     authController.Protect,
     authController.restrictTo("vAdministrator"),

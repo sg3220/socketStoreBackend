@@ -145,16 +145,12 @@ export const Protect = CatchAsync(async (vReq, vRes, vNext) => {
   }
   vReq.vUser = currentUser;
   vRes.locals.vUser = currentUser;
-  vRes.status(200).json({
-    vStatus: "Success",
-    currentUser,
-  });
   vNext();
 });
 export const KnowMe = (vReq, vRes) => {
   vRes.status(200).json({
     vMessage: "Success",
-    user: currentUser,
+    user: vReq.vUser,
   });
 };
 //*
@@ -164,8 +160,7 @@ export const KnowMe = (vReq, vRes) => {
 //* IS-RESTRICT-TO
 export const restrictTo = (...vRoles) => {
   return (vReq, vRes, vNext) => {
-    console.log(vRoles);
-    console.log(vReq.vUser.vRole);
+    console.log(vReq.vUser);
     if (!vRoles.includes(vReq.vUser.vRole)) {
       return vNext(
         new AppError("❗You Do Not Have Permission To Perform This Action", 403)
@@ -187,7 +182,7 @@ export const ForgotPassword = CatchAsync(async (vReq, vRes, vNext) => {
     );
   }
   const vResetToken = temporaryUser.vCreatePasswordResetToken();
-  await temporaryUser.save({ validateBeforeSave: false });
+  await temporaryUser.save({ validateBeforeSave: true });
   const vResetURL = `${vReq.protocol}://${vReq.get(
     "host"
   )}/API/V1/Users/ResetPassword/${vResetToken}`;

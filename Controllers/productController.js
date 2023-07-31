@@ -10,8 +10,8 @@ export const postProduct = CatchAsync(async (vReq, vRes, vNext) => {
   const vNewProduct = await vProduct.create({
     vManufacturerName: vReq.body.vManufacturerName,
     vProductName: vReq.body.vProductName,
-    // vSlug: slug,
-    vProductImages: vReq.body.vProductImages,
+    vFrontImage: vReq.body.vFrontImage,
+    vBackImage: vReq.body.vBackImage,
     vPrice: vReq.body.vPrice,
     vQunatity: vReq.body.vQunatity,
     vUnit: vReq.body.vUnit,
