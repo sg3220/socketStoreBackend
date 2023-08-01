@@ -16,20 +16,6 @@ App.use(
     credentials: true,
   })
 );
-const productList = [
-  {
-    vProductName: "Cookies Heaven Atta",
-    vPrice: 70,
-    vProductImage: "dcfghb",
-    id: "64c23b33ac02c2340caebfdd",
-  },
-  {
-    vProductName: "Cookiesen Atta",
-    vPrice: 70,
-    vProductImage: "cfgtbhnjvbn",
-    id: "64c23b33ac02c2340caebfde",
-  },
-];
 App.get("/", (req, res) => res.send("Socket Server Running"));
 //^ 👇It Is Required To Access The Body
 App.use(express.json());
