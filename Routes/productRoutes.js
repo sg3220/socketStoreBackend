@@ -17,9 +17,11 @@ pRouter
     authController.restrictTo("vAdministrator"),
     productController.deleteProduct
   );
-pRouter.route("/PostProduct").post(
-  // authController.Protect,
-  // authController.restrictTo("vAdministrator"),
-  productController.postProduct
-);
+pRouter
+  .route("/PostProduct")
+  .post(
+    authController.Protect,
+    authController.restrictTo("vAdministrator"),
+    productController.postProduct
+  );
 export default pRouter;
